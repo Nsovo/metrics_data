@@ -1,26 +1,25 @@
-# hitchhiker_server.py
 import asyncio
 import os
 from pathlib import Path
 from grpclib.server import Server
 from hitchhiker_pb2 import SourceId, FileList, Empty
 from hitchhiker_pb2_grpc import HitchhikerSourceBase
+from BusinessLogic import BusinessLogic
+
+DESTINATION_ID = "befit_1"
 
 class HitchhikerSourceImpl(HitchhikerSourceBase):
-
     async def GetSourceId(self, stream) -> SourceId:
         _ = stream
-        return SourceId(id="pilot04")
+        source_id = BusinessLogic.get_source_id()
+        return SourceId(id=source_id)
 
     async def GetDownloads(self, stream) -> FileList:
         request = await stream.recv_message()
         client_id = request.client_id
         destination_id = request.destination_id
-
-        if destination_id != "befit_1":
-            return FileList(files=[])
-
-        return FileList(files=[])
+        files = BusinessLogic.get_downloads(client_id, destination_id)
+        return FileList(files=files)
 
     async def DownloadFile(self, stream) -> FileList:
         request = await stream.recv_message()

@@ -9,19 +9,13 @@ class AppTestCase(unittest.TestCase):
         self.app = app.test_client()
 
     def test_countly_endpoint(self):
-        # Prepare test data
-        metrics = {
-            "metric1": 10,
-            "metric2": 20
-        }
+        metrics = {'key1': 'value1', 'key2': 'value2'}
         headers = {
             "X-Secret-Key": "your_secret_key"
         }
 
-        # Send a POST request to the countly endpoint
         response = self.app.post("/countly", json=metrics, headers=headers)
 
-        # Check the response status code
         self.assertEqual(response.status_code, 200)
 
         # Check if the metrics file is created and contains the correct data
