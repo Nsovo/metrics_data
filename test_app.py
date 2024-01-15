@@ -1,28 +1,35 @@
 import unittest
-import os
 import json
-from app import app
+from app import metricsLocal
+from flask import Flask
 
-class AppTestCase(unittest.TestCase):
-
+class TestCountlyUploadEndpoint(unittest.TestCase):
     def setUp(self):
-        self.app = app.test_client()
+        self.app = metricsLocal.test_client()
 
-    def test_countly_endpoint(self):
-        metrics = {'key1': 'value1', 'key2': 'value2'}
-        headers = {
-            "X-Secret-Key": "your_secret_key"
+    def test_countly_upload(self):
+        # Prepare test data, Random data since we don't know the structure of the data
+        test_data = {
+            "key1": "value1",
+            "key2": "value2"
         }
 
-        response = self.app.post("/countly", json=metrics, headers=headers)
+        # Send POST request to the /countly endpoint
+        response = self.app.post('/countly',
+                                data=json.dumps(test_data),
+                                content_type='application/json')
 
+        # Check response status code
         self.assertEqual(response.status_code, 200)
 
-        # Check if the metrics file is created and contains the correct data
-        path = os.path.join(os.path.dirname(__file__), "metrics.json")
-        with open(path, 'r') as f:
-            saved_metrics = json.load(f)
-        self.assertEqual(saved_metrics, metrics)
+        # Check response data
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data, {"success": True})
 
-if __name__ == '__main__':
+        # Check if data is saved correctly
+        with open("data/metrics.json", 'r') as file:
+            saved_data = json.load(file)
+        self.assertEqual(saved_data, test_data)
+
+if __name__ == "__main__":
     unittest.main()

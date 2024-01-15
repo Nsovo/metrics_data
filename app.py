@@ -3,39 +3,39 @@ from config import Config
 import os
 import json
 
-app = Flask(__name__)
-app.config.from_object(Config)
+# app = Flask(__name__)
+metricsLocal = Flask(__name__)
+metricsLocal.config.from_object(Config)
 
 # TODO: add authentication
 # SECRET_KEY = 'your-secret-key'
 # app.config['SECRET_KEY'] = SECRET_KEY
 
 # Error handler for 404 page not found
-@app.errorhandler(404)
+@metricsLocal.errorhandler(404)
 def page_not_found(e):
     return jsonify(error=str(e)), 404
 
-# Endpoint for receiving metrics and saving them to a file
-@app.route("/countly", methods=['POST'])
+
+@metricsLocal.route("/countly", methods=['POST'])
 def countly_endpoint():
-
-    # if request.headers.get('X-Secret-Key') != SECRET_KEY:
-    #     abort(401)  # Unauthorized
-
     metrics = request.get_json()
 
-    # This path should point to there there usb stick is mounted
-    path = os.path.join(os.path.dirname(__file__), "data/metrics.json")
+    if not metrics:
+        return jsonify(error="No data provided"), 400
 
-    with open(path, 'w') as f:
-        json.dump(metrics, f)
+    # Process metrics here (e.g., validate data, transform, etc.)
+
+    save_metrics(metrics)
 
     return jsonify(success=True), 200
 
-# Default route
-@app.route("/")
-def index():
-    return "Imagine Worldwide!"
+def save_metrics(metrics_data):
+    file_path = os.path.join(os.path.dirname(__file__), "data/metrics.json")
+
+    with open(file_path, 'w') as file:
+        json.dump(metrics_data, file)
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    metricsLocal.run(host='0.0.0.0', port=80)

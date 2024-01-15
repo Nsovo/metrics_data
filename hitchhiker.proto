@@ -1,46 +1,51 @@
 syntax = "proto3";
 
-package hitchhiker;
+package HitchhikerSource;
 
+// The HitchhikerSource service definition.
+service HitchhikerSource {
+  rpc GetSourceId (Empty) returns (SourceId) {}
+  rpc GetDownloads (DownloadsRequest) returns (FileList) {}
+  rpc DownloadFile (DownloadRequest) returns (FileList) {}
+  rpc MarkDelivered (DeliveredRequest) returns (Empty) {}
+}
+
+// Empty message
+message Empty {}
+
+// Message containing the source id
 message SourceId {
   string id = 1;
 }
 
-message ClientId {
-  string id = 1;
+// Message containing the client id and destination id
+message DownloadsRequest {
+  string clientId = 1;
+  string destinationId = 2;
 }
 
-message DestinationId {
-  string id = 1;
+// Message containing the file list
+message FileList {
+  repeated File files = 1;
 }
 
+// Message containing the file details
 message File {
-  string fileid = 1;
+  string fileId = 1;
   string filename = 2;
   string type = 3;
   bytes blob = 4;
 }
 
-message FileList {
-  repeated File files = 1;
+// Message containing the client id and file list
+message DownloadRequest {
+  string clientId = 1;
+  repeated File files = 2;
 }
 
-service HitchhikerSource {
-  rpc GetSourceId (Empty) returns (SourceId) {}
-  rpc GetDownloads (ClientDestinationRequest) returns (FileList) {}
-  rpc DownloadFile (FileList) returns (stream File) {}
-  rpc MarkDelivered (ClientDestinationFileListRequest) returns (Empty) {}
-}
-
-message Empty {}
-
-message ClientDestinationRequest {
-  ClientId client_id = 1;
-  DestinationId destination_id = 2;
-}
-
-message ClientDestinationFileListRequest {
-  ClientId client_id = 1;
-  DestinationId destination_id = 2;
-  FileList files = 3;
+// Message containing the client id, destination id and file list
+message DeliveredRequest {
+  string clientId = 1;
+  string destinationId = 2;
+  repeated File files = 3;
 }
