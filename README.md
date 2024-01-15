@@ -23,7 +23,11 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hitchhiker.pr
 
 1. Clone the repository: `git clone https://github.com/Nsovo/metrics_data.git`
 2. Navigate to the repository directory: `cd metrics-app`
-3. Run the application: `python app.py`
+3. create virtual environment `python3 -m venv env`
+4. activate virtual environment `source env/bin/activate`
+5. Install the dependencies: `pip install -r requirements.txt`
+6. Run the application: `python app.py`
+7. Deactivate virtual environment `deactivate`
 
 ## Running the Tests
 1. python -m unittest test_app

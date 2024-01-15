@@ -1,7 +1,7 @@
 from grpclib.server import Server
 from business_logic import BusinessLogic
 from hitchhiker_pb2 import SourceId, File, FileList, DownloadsRequest, DownloadRequest, DeliveredRequest, Empty
-from hitchhiker_pb2_grpc import HitchhikerSource
+from hitchhiker_grpc import HitchhikerSourceBase
 import asyncio
 import os
 import sys
@@ -15,7 +15,7 @@ DESTINATION_ID = "befit_1"
 # Implementation of the HitchhikerSource interface.
 # This class handles the communication between the client and the server for source-related operations.
     
-class HitchhikerSourceImpl(HitchhikerSource):
+class HitchhikerSourceImpl(HitchhikerSourceBase):
         # ...
 
     def __mapping__(self):
