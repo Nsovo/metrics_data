@@ -16,11 +16,6 @@ Before you can run this application, you'll need to install the following depend
 
 To run this application, follow these steps:
 
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
-python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hitchhiker.proto
-
 1. Clone the repository: `git clone https://github.com/Nsovo/metrics_data.git`
 2. Navigate to the repository directory: `cd metrics-app`
 3. create virtual environment `python3 -m venv env`
@@ -28,6 +23,8 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hitchhiker.pr
 5. Install the dependencies: `pip install -r requirements.txt`
 6. Run the application: `python app.py`
 7. Deactivate virtual environment `deactivate`
+
+generate python code from proto file `python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hitchhiker.proto`
 
 ## Running the Tests
 1. python -m unittest test_app
