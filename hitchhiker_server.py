@@ -1,20 +1,27 @@
 from grpclib.server import Server
 from business_logic import BusinessLogic
 from hitchhiker_pb2 import SourceId, File, FileList, DownloadsRequest, DownloadRequest, DeliveredRequest, Empty
-from hitchhiker_pb2_grpc import HitchhikerSourceBase
+from hitchhiker_pb2_grpc import HitchhikerSource
 import asyncio
 import os
 import sys
+import asyncio
 cwd = os.getcwd() # get the current working directory
 env_path = os.path.join(cwd, 'env', 'lib')  # construct the environment path
 sys.path.append(env_path)
 
 DESTINATION_ID = "befit_1"
     
-# Implementation of the HitchhikerSourceBase interface.
+# Implementation of the HitchhikerSource interface.
 # This class handles the communication between the client and the server for source-related operations.
     
-class HitchhikerSourceImpl(HitchhikerSourceBase):
+class HitchhikerSourceImpl(HitchhikerSource):
+        # ...
+
+    def __mapping__(self):
+        # Return a dictionary or any other data structure
+        # that you want to use for mapping.
+        return {}
 
     """
         Retrieves the source ID from the BusinessLogic module and returns it as a SourceId object.
@@ -80,4 +87,4 @@ async def start_server():
     await server.start('localhost', 50051)
     await server.wait_closed()
 
-asyncio.run(start_server())
+asyncio.get_event_loop().run_until_complete(start_server())

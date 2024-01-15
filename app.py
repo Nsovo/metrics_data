@@ -19,6 +19,7 @@ def page_not_found(e):
 
 @metricsLocal.route("/countly", methods=['POST'])
 def countly_endpoint():
+    
     metrics = request.get_json()
 
     if not metrics:

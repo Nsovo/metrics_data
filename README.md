@@ -16,6 +16,11 @@ Before you can run this application, you'll need to install the following depend
 
 To run this application, follow these steps:
 
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. hitchhiker.proto
+
 1. Clone the repository: `git clone https://github.com/Nsovo/metrics_data.git`
 2. Navigate to the repository directory: `cd metrics-app`
 3. Run the application: `python app.py`
