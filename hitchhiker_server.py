@@ -1,26 +1,61 @@
 from grpclib.server import Server
 from business_logic import BusinessLogic
 from hitchhiker_pb2 import SourceId, File, FileList, DownloadsRequest, DownloadRequest, DeliveredRequest, Empty
-from hitchhiker_grpc import HitchhikerSourceBase
-import sys
+from hitchhiker_pb2_grpc import HitchhikerSourceBase
 import asyncio
-sys.path.append('/Users/nsovo/Developer/personal/metrics-app/env/lib/python3.12/site-packages')
+import os
+import sys
+cwd = os.getcwd() # get the current working directory
+env_path = os.path.join(cwd, 'env', 'lib')  # construct the environment path
+sys.path.append(env_path)
 
 DESTINATION_ID = "befit_1"
+    
+# Implementation of the HitchhikerSourceBase interface.
+# This class handles the communication between the client and the server for source-related operations.
+    
 class HitchhikerSourceImpl(HitchhikerSourceBase):
+
+    """
+        Retrieves the source ID from the BusinessLogic module and returns it as a SourceId object.
+        Args:
+            stream: The gRPC stream used for communication.
+        Returns:
+            SourceId: The source ID.
+    """
     async def GetSourceId(self, stream):
         _ = stream
         source_id = BusinessLogic.get_source_id()
         return SourceId(id=source_id)
 
+    """
+    Retrieves the requested files from the client and sends back the list of files available for download.
+        Args:
+            stream: The gRPC stream used for communication.
+    """
     async def GetDownloads(self, stream):
         request: DownloadsRequest = await stream.recv_message()
-        files = [
-            File(fileId="file1", filename="filename1", type="type1", blob=b"blob1"),
-            File(fileId="file2", filename="filename2", type="type2", blob=b"blob2"),
-        ]
+
+        # Extract information from the request.
+        # Assuming that the request contains a list of file IDs.
+        requested_files = request.files
+
+        files = []
+        for file in requested_files:
+            files.append(File(
+                fileId=file.id, 
+                filename=file.name, 
+                type=file.type, 
+                blob=file.blob
+            ))
+
         await stream.send_message(FileList(files=files))
 
+    """
+    Retrieves the requested files from the client and sends back the file contents.
+        Args:
+            stream: The gRPC stream used for communication.
+    """
     async def DownloadFile(self, stream):
         request: DownloadRequest = await stream.recv_message()
         files = [
@@ -28,6 +63,11 @@ class HitchhikerSourceImpl(HitchhikerSourceBase):
         ]
         await stream.send_message(FileList(files=files))
 
+    """
+    Marks the delivered files and prints the delivery information.
+        Args:
+            stream: The gRPC stream used for communication.
+    """
     async def MarkDelivered(self, stream):
         request: DeliveredRequest = await stream.recv_message()
         for file in request.files:
